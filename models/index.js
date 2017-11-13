@@ -11,7 +11,6 @@ const Page = db.define('pages',{
     urlTitle: {
             type: Sequelize.STRING,
             allowNull: false,
-            validate: {isUrl: true},
             getterMethods: {
                 route(){
                     
@@ -36,6 +35,31 @@ const Page = db.define('pages',{
     
 
 })
+
+
+function urlTitle(title){
+    let nonAlpha = /\W+/g
+    let space = /\s+/g
+    if (title){
+        return title.replace(space, '_').replace(nonAlpha, '')      
+    } else {
+        return Math.random().toString(36).substring(2, 7);
+    }
+
+}
+
+Page.addHook('beforeValidate', (page, options) =>{
+    
+    // return new Promise((resolve, reject) => {
+        page.urlTitle = urlTitle(page.title),
+        console.log(page.urlTitle)
+    //     if (err) reject(err);
+    //     else (resolve)       
+    // })
+        
+})
+
+
 
 const User = db.define('users', {
     name: {

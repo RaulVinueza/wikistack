@@ -15,6 +15,8 @@ nunjucks.configure('views', {
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
+app.use('/', router)
+
 app.use((req,res,next)=>{
     console.log(req.header)
     next()
@@ -26,17 +28,17 @@ app.get('/',(req,res)=>{
     res.render('index')
 })
 
-app.get('/wiki',(req,res)=>{
-    res.render('index')
-})
+// app.get('/wiki',(req,res)=>{
+//     res.render('index')
+// })
 
-app.get('/wiki/:urlTitle',()=>{
-    models.Page.route()
-})
+// app.get('/wiki/:urlTitle',()=>{
+//     models.Page.route()
+// })
 
-app.post('/wiki/add',(req,res)=>{
-    res.render('index')
-})
+// app.post('/wiki/add',(req,res)=>{
+//     res.render('index')
+// })
 
 models.User.sync()
 .then(

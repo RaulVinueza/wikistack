@@ -51,8 +51,8 @@ function urlTitle(title){
 Page.addHook('beforeValidate', (page, options) =>{
     
     // return new Promise((resolve, reject) => {
-        page.urlTitle = urlTitle(page.title),
-        console.log(page.urlTitle)
+        page.urlTitle = urlTitle(page.title)
+        
     //     if (err) reject(err);
     //     else (resolve)       
     // })
@@ -69,10 +69,12 @@ const User = db.define('users', {
     email: {
         type: Sequelize.STRING,
         allowNull: false,
-        validate: {isEmail: true}
+        
         
     }
 })
+
+Page.belongsTo(User, {as: 'author'})
 
 
 module.exports = {

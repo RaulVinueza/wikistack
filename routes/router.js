@@ -5,4 +5,4 @@ const user = require('./user')
 module.exports = router
 
 router.use("/wiki", wiki)
-// router.use("/user", user)
+router.use("/users", user)

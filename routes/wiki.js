@@ -16,16 +16,47 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   // res.send('got to POST /wiki/');
   // res.json(req.body)
-  var page = Page.build({
-    title: req.body.title,
-    content: req.body.content
-  });
+  
 
+User.findOrCreate({
+    where: {
+      name: req.body.name,
+      email: req.body.email
+    }}).then(
+      (values)=>{
+        console.log(values[1])
+        let user = values[0]
+        let page = Page.build({
+          title: req.body.title,
+          content: req.body.content,
+        })
 
-    page.save()
-    .then(entry => res.redirect(`/wiki/${entry.urlTitle}`))
-    .catch(next)
-});
+        return page.save().then(
+          (page)=>{
+            return page.setAuthor(user)
+        })
+      }
+    ).then(
+      (page)=>{res.redirect(`/wiki/${page.urlTitle}`)}
+    ).catch(next)
+
+  
+    
+    // Promise.all([savedPage,foundUser])
+    // .then(
+    //   (arrayOfPromises)=>{
+        
+    //     let user = arrayOfPromises[1][0]
+    //     let page = arrayOfPromises[0]
+    //     res.json(page.__proto__)
+
+    //     return page.setAuthor(user)
+    //   }
+    // ).then((page)=>{
+    //   res.redirect(`/wiki/${page.urlTitle}`)
+    // }).catch(next)
+
+})
 
 
 
@@ -40,7 +71,11 @@ router.get('/:urlTitle', function(req, res, next){
 		where: {
 			urlTitle: req.params.urlTitle
 		}
-	})
-	.then(page => res.render('wikipage', {page: page}))
+	}).then((page)=>{
+    return Promise.all([page.getAuthor(), page])
+  }) 
+	.then(arr => {
+    res.render('wikipage', {page: arr[1], author: arr[0]})
+  })
 	.catch(next)
 })

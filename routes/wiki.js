@@ -23,9 +23,24 @@ router.post('/', function(req, res, next) {
 
 
     page.save()
-    .then(entry => res.json(entry))
+    .then(entry => res.redirect(`/wiki/${entry.urlTitle}`))
+    .catch(next)
 });
+
+
 
 router.get('/add', function(req, res, next) {
   res.render('addpage')
+
 });
+
+router.get('/:urlTitle', function(req, res, next){
+	// res.send(req.params.urlTitle)
+	Page.findOne({
+		where: {
+			urlTitle: req.params.urlTitle
+		}
+	})
+	.then(page => res.render('wikipage', {page: page}))
+	.catch(next)
+})

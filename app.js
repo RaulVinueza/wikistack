@@ -4,6 +4,8 @@ const nunjucks = require('nunjucks')
 const models = require('./models')
 const router = require('./routes/router')
 const app = express()
+var Page = models.Page; 
+var User = models.User; 
 
 app.set('view engine', 'html')
 app.engine('html', nunjucks.render)
@@ -24,8 +26,9 @@ app.use((req,res,next)=>{
 
 app.use(express.static('public'))
 
-app.get('/',(req,res)=>{
-    res.render('index')
+app.get('/',(req,res, next)=>{
+    Page.findAll().then(arr => res.render('index', {pages: arr}))
+    .catch(next)
 })
 
 // app.get('/wiki',(req,res)=>{
